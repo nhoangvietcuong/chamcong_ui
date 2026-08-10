@@ -1,0 +1,6 @@
+export const AttendanceStatus = {
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  INVALID: 'INVALID',
+  REVIEW_REQUIRED: 'REVIEW_REQUIRED',
+};
