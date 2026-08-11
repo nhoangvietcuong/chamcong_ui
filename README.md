@@ -1,105 +1,102 @@
-# Hệ thống Chấm công PWA - Admin Dashboard Frontend
-
-Chào mừng bạn đến với phân hệ **Quản lý (Admin Dashboard)** thuộc giải pháp Chấm công bảo mật thông qua WebAuthn & Face Recognition.
-
-Dự án này được xây dựng bằng **ReactJS 19**, **Vite 5**, **Tailwind CSS v4**, **Axios**, và **React Router DOM v6**.
+# 💻 TRANG QUẢN TRỊ ADMIN (ADMIN DASHBOARD PORTAL)
+> **Phân hệ Quản trị Web Dashboard** dành cho Ban Giám đốc, Nhân sự (HR) và Quản lý để giám sát, phân công và kiểm duyệt chấm công toàn công ty.
 
 ---
 
-## 1. Công nghệ sử dụng (Tech Stack)
+## 📌 1. Tổng Quan Về Trang Quản Trị
 
-- **Core**: React 19, JavaScript (ES6+).
-- **Styling**: Tailwind CSS v4, PostCSS, Google Fonts (Outfit, Inter).
-- **Forms & Validation**: React Hook Form, Zod Validators.
-- **HTTP Client**: Axios với cơ chế hàng đợi tự động làm mới token (Automatic Token Refresh Queue) và Dynamic Device Fingerprint header.
-- **Routing**: React Router DOM (với Route Guards và Role Guards).
-- **Build System**: Vite 5.
+Trang Quản trị là giao diện Web dành cho Admin và Manager nhằm theo dõi tình hình làm việc của toàn bộ nhân viên kỹ thuật hiện trường theo thời gian thực. 
+
+Ứng dụng giúp tự động hóa quá trình quản lý nhân sự, loại bỏ báo cáo thủ công bằng giấy, và đưa ra quyết định duyệt công chính xác dựa trên dữ liệu vị trí GPS & nhận diện khuôn mặt AI.
+
+### 🌟 Các Phân Hệ Quản Lý Chính:
+1. **📊 Bảng Điều Khiển Tổng Quan (Dashboard)**: Thống kê tổng nhân sự, tỷ lệ chuyên cần, số lượt check-in hôm nay, biểu đồ công tích lũy và cảnh báo hệ thống.
+2. **⚠️ Hàng Đợi Kiểm Duyệt (Review Queue)**: Phê duyệt hoặc Từ chối các lượt chấm công nghi vấn (vượt bán kính >100m, mất tín hiệu GPS, hoặc hình ảnh không khớp).
+3. **👥 Quản Lý Nhân Sự (Employees) & Tài Khoản (Accounts)**: Tạo hồ sơ nhân viên, cấp tài khoản, đổi vai trò (Role), đặt lại mật khẩu và khóa/mở tài khoản.
+4. **🏢 Quản Lý Phòng Ban (Departments)**: Thêm mới, cập nhật và quản lý cơ cấu phòng ban trong công ty.
+5. **📍 Quản Lý Địa Điểm Chấm Công (Work Locations)**: Thiết lập tọa độ GPS (Vĩ độ, Kinh độ) và cài đặt bán kính Geofence cho phép (ví dụ: 100m).
+6. **📅 Quản Lý Phân Công (Assignments)**: Giao địa điểm và ca làm việc cho nhân viên theo từng ngày.
+7. **📑 Quản Lý Đơn Nghỉ Phép & Tăng Ca (OT)**: Tiếp nhận và xử lý đơn xin nghỉ phép năm, đơn đăng ký làm thêm giờ của nhân viên.
+8. **📊 Lịch Sử Chấm Công & Báo Cáo (Reports)**: Tra cứu lịch sử check-in/out kèm ảnh chụp thực tế, tọa độ GPS, độ lệch Geofence và xuất báo cáo công tháng.
+9. **🛡️ Trung Tâm Bảo Mật & Nhật Ký (Security Center & Audit Logs)**: Giám sát các phiên đăng nhập đang hoạt động, khóa thiết bị lạ, và kiểm toán mọi thao tác trên hệ thống.
 
 ---
 
-## 2. Cấu trúc thư mục (Directory Structure)
+## 🛠️ 2. Công Nghệ Sử Dụng
+
+- **Core Library:** ReactJS (React 19)
+- **Build Tool:** Vite 5 (Build siêu nhanh, tối ưu hóa dung lượng bundle)
+- **Styling:** Tailwind CSS, Google Fonts (Outfit, Inter)
+- **HTTP Client:** Axios Interceptor (Tự động gửi Token, tự động Refresh Token và đính kèm `X-Device-Fingerprint`)
+- **Form & Validation:** React Hook Form, Zod Schema Validator
+- **Icon Set:** React Icons (Feather Icons & Remix Icons)
+- **Date Utilities:** Day.js
+
+---
+
+## 📂 3. Cấu Trúc Thư Mục (`/CHAMCONG_UI/src`)
 
 ```text
-CHAMCONG_UI/
-├── dist/                     # Thư mục build production
-├── src/
-│   ├── assets/               # Ảnh và icons tĩnh
-│   ├── components/           # Component dùng chung (Button, Table, Modal...)
-│   ├── constants/            # Các hằng số quyền hạn và endpoint (ROLE_CONSTANTS...)
-│   ├── contexts/             # State chia sẻ toàn cục (Auth, Theme, App status)
-│   ├── enums/                # Enums ánh xạ trạng thái database
-│   ├── hooks/                # Custom React Hooks (useAuth, usePagination, useSearch...)
-│   ├── layouts/              # Giao diện khung (DashboardLayout...)
-│   ├── pages/                # Các trang chức năng của dashboard
-│   ├── routes/               # Quản lý định tuyến và chốt chặn phân quyền
-│   ├── services/             # Lớp kết nối HTTP API Client (Axios)
-│   ├── validators/           # Zod Validation schemas tách biệt
-│   ├── App.jsx               # Quản lý routing chính
-│   ├── index.css             # Định nghĩa CSS hệ thống & Theme màu
-│   └── main.jsx              # Điểm khởi chạy React App
-├── index.html                # HTML entry point
-├── package.json              # Quản lý dependencies & scripts
-├── postcss.config.js         # Cấu hình PostCSS & Tailwind v4
-└── vite.config.js            # Cấu hình đóng gói Vite
+CHAMCONG_UI/src/
+├── assets/           # Hình ảnh, biểu tượng (Logo, icons)
+├── components/       # Component dùng chung (Button, Table, Modal, StatusBadge, Card...)
+├── constants/        # Hằng số hệ thống, danh sách Role, API Endpoints
+├── contexts/         # React Context chia sẻ trạng thái toàn cục (Auth, App State)
+├── hooks/            # Custom Hooks (useAuth, usePagination, useSearch, useApp...)
+├── layouts/          # Khung giao diện chính (DashboardLayout có Sidebar & Topbar)
+├── pages/            # Giao diện các trang chức năng:
+│   ├── Dashboard.jsx            # Trang tổng quan thống kê
+│   ├── ReviewQueue.jsx          # Trang hàng đợi kiểm duyệt Admin
+│   ├── Attendance.jsx           # Trang lịch sử chấm công toàn hệ thống
+│   ├── Employees.jsx            # Trang quản lý nhân sự
+│   ├── Departments.jsx          # Trang quản lý phòng ban
+│   ├── WorkLocations.jsx        # Trang quản lý địa điểm GPS
+│   ├── Assignments.jsx          # Trang phân công công việc
+│   ├── LeaveRequests.jsx        # Trang duyệt đơn nghỉ phép
+│   ├── OvertimeRequests.jsx     # Trang duyệt đơn tăng ca
+│   ├── Reports.jsx              # Trang báo cáo & thống kê công
+│   └── SecurityCenter.jsx       # Trang bảo mật & giám sát phiên
+├── services/         # Tầng kết nối gọi RESTful API tới Backend
+├── App.jsx           # Quản lý cấu hình Định tuyến (Routing) & Bảo vệ Route Guard
+└── main.jsx          # File điểm khởi chạy React
 ```
 
 ---
 
-## 3. Biến môi trường (Environment Variables)
+## 🚀 4. Hướng Dẫn Cài Đặt & Chạy Ứng Dụng
 
-Dự án sử dụng file cấu hình biến môi trường của Vite: `.env` ở thư mục gốc.
-
-```env
-VITE_API_URL=http://localhost:5000/api
-```
-
----
-
-## 4. Hướng dẫn Cài đặt & Chạy dự án (Installation & Running)
-
-### Bước 1: Khởi động cài đặt thư viện
+### 1. Cài đặt các thư viện cần thiết
 ```bash
+cd CHAMCONG_UI
 npm install
 ```
 
-### Bước 2: Chạy dự án ở chế độ phát triển (Development Mode)
+### 2. Cấu hình biến môi trường (`.env`)
+Tạo file `.env` tại thư mục gốc `CHAMCONG_UI`:
+```env
+VITE_API_URL=http://localhost:3000/api
+```
+
+### 3. Chạy ứng dụng ở chế độ Phát Triển (Development)
 ```bash
 npm run dev
 ```
+Trang quản trị sẽ chạy tại địa chỉ: `http://localhost:5173` (hoặc port do Vite cấp).
 
-### Bước 3: Đóng gói sản phẩm (Production Build)
+### 4. Đóng gói sản phẩm (Production Build)
 ```bash
 npm run build
 ```
+File tĩnh sau khi build sẽ nằm trong thư mục `CHAMCONG_UI/dist/`.
 
 ---
 
-## 5. Danh sách các phân hệ (Dashboard Modules)
+## 🔑 5. Tài Khoản Đăng Nhập Mặc Định
 
-1. **Tổng quan (Dashboard)**: Thống kê tổng số lượng nhân sự, phòng ban, địa điểm và các cảnh báo thiếu API.
-2. **Quản lý Phòng ban (Departments CRUD)**: Tạo mới, cập nhật, thay đổi trạng thái, in và xuất CSV.
-3. **Quản lý Nhân sự (Employees CRUD)**: Quản lý nhân viên kèm tùy chọn tạo tài khoản, xóa/thu hồi khóa WebAuthn.
-4. **Địa điểm chấm công (Work Locations CRUD)**: Quản lý vị trí GPS và bản đồ radar geofence kiểm soát bán kính cho phép.
-5. **Phân công làm việc (Assignments CRUD)**: Giao dự án cho nhân viên theo ngày làm việc.
-6. **Lịch sử chấm công (Attendance logs)**: Xem chi tiết check-in/out, GPS Accuracy, ảnh chụp Cloudinary, Face Verification similarity.
-7. **Kiểm duyệt (Review Queue)**: Duyệt các yêu cầu chấm công lỗi phạm vi geofence.
-8. **Hồ sơ khuôn mặt (Face Profiles)**: Quản lý vector đặc trưng nhận diện.
-9. **Khóa WebAuthn**: Quản lý khóa bảo mật sinh trắc học và mã PIN FIDO2.
-10. **Thiết bị đăng ký**: Vô hiệu hóa hoặc thu hồi quyền truy cập của thiết bị.
-11. **Trung tâm bảo mật (Security Center)**: Giám sát phiên hoạt động, lịch sử đăng nhập lỗi, force logout.
-12. **Nhật ký hệ thống (Audit Logs)**: Kiểm toán lịch sử thao tác API.
-13. **Cấu hình tham số (System Settings)**: Điều chỉnh thời gian timeout, ngưỡng sai lệch GPS cho quản trị viên.
+- **Tài khoản**: `admin`
+- **Mật khẩu**: `Admin@123`
 
 ---
 
-## 6. Luồng hoạt động (System Flows)
-
-### A. Luồng Đăng nhập & Xác thực phiên
-1. Người dùng nhập tài khoản/mật khẩu -> Nhận diện thiết bị (Client Device Name) -> API trả về Access Token & Refresh Token.
-2. Ứng dụng tự động kiểm tra phiên hoạt động sau mỗi 5 giây (`/auth/me`).
-3. Khi Access Token hết hạn, Axios Interceptor tự động đưa các request lỗi vào hàng đợi, gọi `/auth/refresh-token` để cấp Access Token mới, và tự động gọi lại các request lỗi.
-
-### B. Luồng Hiển thị Báo cáo & Lọc dữ liệu
-- Người dùng chọn bộ lọc thời gian/nhân viên -> Hệ thống gọi API kết hợp phân trang tự động.
-- In danh sách hoặc Xuất CSV hoàn toàn xử lý cục bộ trên Client Browser.
-- Dữ liệu hình ảnh khuôn mặt của Cloudinary chỉ được tải về khi xem chi tiết (AttendanceDetailModal) để tối ưu băng thông.
+## 🛡️ License & Copyright
+Dự án được bảo hộ quyền sở hữu trí tuệ cho phân hệ quản trị nhân sự hiện trường.
