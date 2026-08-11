@@ -625,14 +625,15 @@ export const Attendance = () => {
                               ({selectedAttendance.gps.checkIn.validationResult === 'ACCEPTED' ? 'Đạt' : 'Không đạt'})
                             </strong>
                           </div>
-                          {selectedAttendance.workLocation?.matchedLocationName && (
-                            <div className="p-2 bg-slate-50 dark:bg-slate-900 border rounded-lg col-span-2">
-                              <span className="text-[8px] text-slate-400 block uppercase font-sans">Địa điểm Check-in thực tế</span>
-                              <strong className="text-primary-655 dark:text-primary-400 font-bold">
-                                {selectedAttendance.workLocation.matchedLocationName}
-                              </strong>
-                            </div>
-                          )}
+                          <div className="p-2 bg-slate-50 dark:bg-slate-900 border rounded-lg col-span-2">
+                            <span className="text-[8px] text-slate-400 block uppercase font-sans">Địa điểm / Nơi Check-in thực tế</span>
+                            <strong className="text-primary-655 dark:text-primary-400 font-bold block text-xs mt-0.5">
+                              📍 {selectedAttendance.workLocation?.matchedLocationName || selectedAttendance.workLocation?.locationName || (selectedAttendance.assignment?.allowedLocations && selectedAttendance.assignment.allowedLocations.length > 0 ? selectedAttendance.assignment.allowedLocations.map(l => l.locationName).join(', ') : 'Theo tọa độ GPS')}
+                            </strong>
+                            {selectedAttendance.workLocation?.address && (
+                              <span className="text-[9px] text-slate-500 block truncate mt-0.5">{selectedAttendance.workLocation.address}</span>
+                            )}
+                          </div>
                         </div>
                       ) : (
                         <p className="text-[10px] text-slate-455 italic">Không có dữ liệu GPS</p>
@@ -776,6 +777,15 @@ export const Attendance = () => {
                               {selectedAttendance.gps.checkOut.distanceToWorkLocation !== null ? `${selectedAttendance.gps.checkOut.distanceToWorkLocation.toFixed(1)} m` : '0 m'}
                               ({selectedAttendance.gps.checkOut.validationResult === 'ACCEPTED' ? 'Đạt' : 'Không đạt'})
                             </strong>
+                          </div>
+                          <div className="p-2 bg-slate-50 dark:bg-slate-900 border rounded-lg col-span-2">
+                            <span className="text-[8px] text-slate-400 block uppercase font-sans">Địa điểm / Nơi Check-out thực tế</span>
+                            <strong className="text-primary-655 dark:text-primary-400 font-bold block text-xs mt-0.5">
+                              📍 {selectedAttendance.workLocation?.matchedLocationName || selectedAttendance.workLocation?.locationName || (selectedAttendance.assignment?.allowedLocations && selectedAttendance.assignment.allowedLocations.length > 0 ? selectedAttendance.assignment.allowedLocations.map(l => l.locationName).join(', ') : 'Theo tọa độ GPS')}
+                            </strong>
+                            {selectedAttendance.workLocation?.address && (
+                              <span className="text-[9px] text-slate-500 block truncate mt-0.5">{selectedAttendance.workLocation.address}</span>
+                            )}
                           </div>
                         </div>
                       ) : (
