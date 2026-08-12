@@ -16,6 +16,7 @@ import clsx from 'clsx';
 import logo from "../assets/1.png";
 import { hasMinRole } from '../utils/role.utils';
 
+
 export const DashboardLayout = () => {
   const { user, logout, role } = useAuth();
   const { theme, toggleTheme } = useTheme();
@@ -190,6 +191,7 @@ export const DashboardLayout = () => {
             </Link>
           </div>
         </header>
+
 
         {/* Content Wrapper */}
         <main ref={mainRef} className="flex-1 overflow-y-auto p-6 min-w-0">

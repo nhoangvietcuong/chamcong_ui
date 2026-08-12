@@ -39,23 +39,28 @@ export const Notifications = () => {
           let type = 'info';
           let title = 'Thông báo hệ thống';
 
-          if (log.status === 'FAILED' || log.action.includes('FAILED') || log.action.includes('ERROR')) {
+          const id = log.logId ?? log.logid ?? log.log_id;
+          const actionTime = log.actionTime ?? log.actiontime ?? log.action_time;
+          const fullName = log.fullName ?? log.fullname ?? log.full_name;
+          const employeeCode = log.employeeCode ?? log.employeecode ?? log.employee_code;
+
+          if (log.status === 'FAILED' || (log.action && (log.action.includes('FAILED') || log.action.includes('ERROR')))) {
             type = 'warning';
             title = `Cảnh báo: ${log.action}`;
-          } else if (log.status === 'SUCCESS' || log.action.includes('SUCCESS') || log.action.includes('REGISTER') || log.action.includes('CREATE') || log.action.includes('ENABLED')) {
+          } else if (log.status === 'SUCCESS' || (log.action && (log.action.includes('SUCCESS') || log.action.includes('REGISTER') || log.action.includes('CREATE') || log.action.includes('ENABLED')))) {
             type = 'success';
             title = log.action;
           }
 
           return {
-            id: log.logId,
+            id,
             title,
             desc: log.description,
-            time: dayjs(log.actionTime).format('DD/MM/YYYY HH:mm'),
-            rawTime: log.actionTime,
+            time: actionTime ? dayjs(actionTime).format('DD/MM/YYYY HH:mm') : 'Mới đây',
+            rawTime: actionTime,
             type,
-            fullName: log.fullName,
-            employeeCode: log.employeeCode
+            fullName,
+            employeeCode
           };
         });
         setNotifications(items);
@@ -107,7 +112,7 @@ export const Notifications = () => {
   };
 
   // Filter out deleted notifications
-  const visibleNotifications = notifications.filter(n => !deletedIds.includes(n.id));
+  const visibleNotifications = notifications.filter(n => n.id !== undefined && !deletedIds.includes(n.id) && !deletedIds.includes(String(n.id)));
 
   return (
     <div className="space-y-6 text-left animate-fade-in">

@@ -133,6 +133,7 @@ export const FaceRegisterPage = ({ onComplete, onClose }) => {
           } else {
             const { yaw, pitch, isSmiling, currentYawPose, currentPitchPose } = qualityCheck.pose;
             const currentStep = STEPS[currentStepIndex];
+            if (!currentStep) return;
 
             let isTargetMatched = false;
             let feedback = '';
@@ -284,13 +285,18 @@ export const FaceRegisterPage = ({ onComplete, onClose }) => {
       </header>
 
       {/* Guide Banner */}
-      <div className="bg-slate-900/60 p-4 border-b border-slate-800/40 text-center flex-none">
-        <span className="text-[10px] font-bold tracking-wider uppercase text-violet-400 bg-violet-500/10 px-2.5 py-1 rounded-full">
-          Bước {currentStepIndex + 1} / {STEPS.length}
-        </span>
-        <h3 className="text-sm font-black mt-2 text-slate-100">{currentStep.text}</h3>
-        <p className="text-xs text-slate-400 mt-0.5">{currentStep.desc}</p>
-      </div>
+      {(() => {
+        const currentStep = STEPS[currentStepIndex] || STEPS[STEPS.length - 1] || {};
+        return (
+          <div className="bg-slate-900/60 p-4 border-b border-slate-800/40 text-center flex-none">
+            <span className="text-[10px] font-bold tracking-wider uppercase text-violet-400 bg-violet-500/10 px-2.5 py-1 rounded-full">
+              Bước {Math.min(currentStepIndex + 1, STEPS.length)} / {STEPS.length}
+            </span>
+            <h3 className="text-sm font-black mt-2 text-slate-100">{currentStep.text || ''}</h3>
+            <p className="text-xs text-slate-400 mt-0.5">{currentStep.desc || ''}</p>
+          </div>
+        );
+      })()}
 
       {/* Camera Panel */}
       <main className="flex-1 flex items-center justify-center p-4 relative bg-black">

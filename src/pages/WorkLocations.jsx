@@ -7,6 +7,7 @@ import {
 } from 'react-icons/fi';
 import LocationSearch from '../components/LocationSearch';
 import { workLocationService } from '../services/workLocationService';
+import settingService from '../services/settingService';
 import useApp from '../hooks/useApp';
 import usePagination from '../hooks/usePagination';
 import Card from '../components/Card';
@@ -33,6 +34,7 @@ export const WorkLocations = () => {
   const [statusFilter, setStatusFilter] = useState('');
   const [sortBy, setSortBy] = useState('createdAt');
   const [sortOrder, setSortOrder] = useState('desc');
+  const [defaultRadius, setDefaultRadius] = useState(100);
 
   // Modals state
   const [formModalOpen, setFormModalOpen] = useState(false);
@@ -75,6 +77,11 @@ export const WorkLocations = () => {
 
   useEffect(() => {
     fetchLocations();
+    settingService.getSettings().then(res => {
+      if (res && res.success && res.data?.defaultAllowedRadius) {
+        setDefaultRadius(Number(res.data.defaultAllowedRadius));
+      }
+    }).catch(() => {});
   }, [fetchLocations]);
 
   const handleSearch = (val) => {
@@ -100,7 +107,7 @@ export const WorkLocations = () => {
       address: '',
       latitude: '',
       longitude: '',
-      allowedRadiusMeter: 100,
+      allowedRadiusMeter: defaultRadius,
       isCompanyLocation: false,
     });
     setFormModalOpen(true);
@@ -175,7 +182,7 @@ export const WorkLocations = () => {
         address,
         latitude,
         longitude,
-        allowedRadiusMeter: 100,
+        allowedRadiusMeter: defaultRadius,
         isCompanyLocation: false,
       });
       setFormModalOpen(true);

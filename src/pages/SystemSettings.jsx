@@ -179,6 +179,18 @@ export const SystemSettings = () => {
                       />
                     </div>
                     <div className="space-y-1">
+                      <label className="text-slate-455 dark:text-slate-400 font-semibold">Bán kính vùng đệm (buffer) (mét):</label>
+                      <input 
+                        type="number" 
+                        name="geofenceBufferMeter"
+                        min="0"
+                        max="100"
+                        value={settings.geofenceBufferMeter !== undefined ? settings.geofenceBufferMeter : 20}
+                        onChange={handleChange}
+                        className="w-full border dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 rounded-lg p-2 focus:outline-none" 
+                      />
+                    </div>
+                    <div className="space-y-1">
                       <label className="text-slate-455 dark:text-slate-400 font-semibold">Độ chính xác GPS tối đa (mét):</label>
                       <input 
                         type="number" 
